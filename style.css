@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e93cc 0%, #0088cc 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.telegram-box {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+    background: #0088cc;
+    padding: 30px 20px;
+    text-align: center;
+    color: white;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar img {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+}
+
+.channel-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.subscribers {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.content {
+    padding: 30px 25px;
+}
+
+.description {
+    color: #555;
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+/* Желейная кнопка */
+.jelly-button {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #2e9adf 0%, #0088cc 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 0 #006ba3,
+                0 10px 20px rgba(0, 137, 204, 0.3);
+    margin-bottom: 25px;
+}
+
+.jelly-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #006ba3,
+                0 12px 25px rgba(0, 137, 204, 0.4);
+}
+
+.jelly-button:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 #006ba3,
+                0 5px 15px rgba(0, 137, 204, 0.3);
+    transition: all 0.1s ease;
+}
+
+.jelly-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.jelly-button:active::after {
+    opacity: 1;
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.button-icon {
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 22px;
+    height: 22px;
+    filter: brightness(0) invert(1);
+}
+
+.footer {
+    color: #888;
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
+.footer a {
+    color: #0088cc;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.telegram-logo {
+    text-align: center;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+
+.telegram-logo img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+    .telegram-box {
+        border-radius: 10px;
+    }
+    
+    .content {
+        padding: 25px 20px;
+    }
+    
+    .jelly-button {
+        padding: 16px;
+        font-size: 16px;
+    }
+}
+
+/* Анимация загрузки */
+.loader {
+    display: none;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.loader-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0088cc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
